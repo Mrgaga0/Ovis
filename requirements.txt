@@ -1,0 +1,16 @@
+google-generativeai>=0.3.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+PyYAML>=6.0
+Jinja2>=3.1.2
+loguru>=0.7.2
+pydantic>=2.5.2
+pytest>=7.4.3
+pytest-cov>=4.1.0
+black>=23.11.0
+isort>=5.12.0
+flake8>=6.1.0
+pynput>=1.7.6
+beautifulsoup4>=4.12.2
+PyQt6>=6.6.1
+PyQt6-QScintilla>=2.14.1 

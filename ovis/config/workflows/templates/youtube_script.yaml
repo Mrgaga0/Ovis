@@ -1,0 +1,62 @@
+id: youtube_script
+name: 유튜브 스크립트 작성
+description: 선택한 주제에 대한 유튜브 스크립트를 작성합니다.
+
+tasks:
+  - id: keyword_extraction
+    handler: ai_process
+    parameters:
+      prompt_template: keyword_extraction/youtube_keywords
+      input_from: user_input
+      output_format: json
+      
+  - id: search_recent_info
+    handler: brave_search
+    parameters:
+      query_from: keyword_extraction
+      count: 10
+      time_range: "3d"
+      sort: "recent"
+      
+  - id: search_popular_info
+    handler: brave_search
+    parameters:
+      query_from: keyword_extraction
+      count: 7
+      sort: "relevant"
+      
+  - id: fetch_related_articles
+    handler: rss_related_fetch
+    parameters:
+      keywords_from: keyword_extraction
+      sources:
+        - https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko
+        - https://www.youtube.com/feeds/videos.xml?channel_id=POPULAR_CHANNELS
+      max_per_source: 5
+      
+  - id: script_generation
+    handler: ai_process
+    parameters:
+      prompt_template: article_generation/script
+      inputs:
+        - topic: user_input
+        - recent_results: search_recent_info
+        - popular_results: search_popular_info
+        - related_articles: fetch_related_articles
+      output_format: markdown
+      
+  - id: user_review
+    handler: user_interaction
+    parameters:
+      type: text_editor
+      data_from: script_generation
+      title: "생성된 스크립트를 검토하고 편집하세요"
+      
+  - id: script_finalization
+    handler: ai_process
+    parameters:
+      prompt_template: editing/finalize_script
+      inputs:
+        - original: script_generation
+        - edited: user_review
+      output_format: markdown 

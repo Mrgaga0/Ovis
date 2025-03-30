@@ -1,0 +1,22 @@
+id: web_search_workflow
+name: Web Search and Summarize
+description: Search the web for a topic and create a summary of the results
+
+tasks:
+  - id: search
+    type: search_web
+    params:
+      query: "artificial intelligence latest news"
+      limit: 5
+
+  - id: summarize_results
+    type: summarize_text
+    params:
+      previous_result: $search
+      max_length: 200
+
+  - id: save_summary
+    type: save_to_file
+    params:
+      filename: "ai_news_summary.txt"
+      previous_result: $summarize_results 

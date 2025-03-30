@@ -1,0 +1,28 @@
+{
+  "api_keys": {
+    "gemini": "AIzaSyAfPLmxWaXYeIlgHzqIez3ly2xSpt79xo8",
+    "brave_search": "BSAItwjMg9RnDJXPSvOOb9MBwYVi4yR"
+  },
+  "storage": {
+    "local_path": "./data",
+    "nas": {
+      "enabled": false,
+      "host": "",
+      "user": "",
+      "password": "",
+      "share_path": ""
+    }
+  },
+  "ui": {
+    "theme": "light",
+    "language": "ko",
+    "window_size": {
+      "width": 1200,
+      "height": 800
+    }
+  },
+  "workflow": {
+    "default_workflows_path": "./config/workflows",
+    "auto_save": true
+  }
+}
