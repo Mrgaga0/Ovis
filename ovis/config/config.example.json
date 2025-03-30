@@ -1,7 +1,7 @@
 {
   "api_keys": {
-    "gemini": "AIzaSyAfPLmxWaXYeIlgHzqIez3ly2xSpt79xo8",
-    "brave_search": "BSAItwjMg9RnDJXPSvOOb9MBwYVi4yR"
+    "gemini": "YOUR_GEMINI_API_KEY",
+    "brave_search": "YOUR_BRAVE_SEARCH_API_KEY"
   },
   "storage": {
     "local_path": "./data",
