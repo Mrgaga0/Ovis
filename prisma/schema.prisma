@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  status      String   @default("planning")
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rooms       Room[]
+  team        Team     @relation(fields: [teamId], references: [id])
+  teamId      String
+  metadata    String?  @default("{}")
+  progress    String   @default("{\"overall\": 0, \"completedTasks\": 0, \"totalTasks\": 0, \"lastUpdated\": null}")
+}
+
+model Room {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  project     Project      @relation(fields: [projectId], references: [id])
+  projectId   String
+  tasks       Task[]
+  documents   Document[]
+  discussions Discussion[]
+  createdBy   String
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      String       @default("todo")
+  priority    String       @default("medium")
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  room        Room         @relation(fields: [roomId], references: [id])
+  roomId      String
+  assignee    String?
+  attachments Attachment[]
+  comments    Comment[]
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  room        Room     @relation(fields: [roomId], references: [id])
+  roomId      String
+  createdBy   String
+  attachments Attachment[]
+}
+
+model Discussion {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  room      Room      @relation(fields: [roomId], references: [id])
+  roomId    String
+  createdBy String
+  messages  Message[]
+}
+
+model Message {
+  id           String     @id @default(cuid())
+  content      String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  discussion   Discussion @relation(fields: [discussionId], references: [id])
+  discussionId String
+  createdBy    String
+  attachments  Attachment[]
+  comments     Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  task      Task?    @relation(fields: [taskId], references: [id])
+  taskId    String?
+  message   Message? @relation(fields: [messageId], references: [id])
+  messageId String?
+  createdBy String
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  type      String
+  size      Int
+  createdAt DateTime @default(now())
+  task      Task?    @relation(fields: [taskId], references: [id])
+  taskId    String?
+  document  Document? @relation(fields: [documentId], references: [id])
+  documentId String?
+  message   Message? @relation(fields: [messageId], references: [id])
+  messageId String?
+  createdBy String
+}
+
+model Team {
+  id        String    @id @default(cuid())
+  name      String
+  owner     String
+  members   String    @default("[]")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  projectId String
+  roomId    String?
+  taskId    String?
+  userId    String
+  details   String?  @default("{}")
+  timestamp DateTime @default(now())
+}
+
+model Content {
+  id        String   @id @default(uuid())
+  type      String
+  content   String
+  metadata  String
+  version   String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  versions  ContentVersion[]
+}
+
+model ContentVersion {
+  id        String   @id @default(uuid())
+  contentId String
+  version   String
+  content   String
+  metadata  String
+  createdAt DateTime @default(now())
+  createdBy String
+  parent    Content  @relation(fields: [contentId], references: [id])
+}
+
+model ContentTemplate {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  structure String
+  variables String
+  rules     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PublicationStyle {
+  id        String   @id @default(uuid())
+  name      String
+  rules     String
+  templates String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StyleGuide {
+  id        String   @id @default(uuid())
+  name      String
+  rules     String
+  examples  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  name      String
+  size      Int
+  mimeType  String
+  path      String
+  width     Int?
+  height    Int?
+  duration  Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 에이전트 시스템 모델
+model Agent {
+  id           String         @id @default(cuid())
+  name         String         @unique
+  type         String         // "base", "task", "custom" 등
+  status       String         @default("initialized")
+  metadata     String         @default("{}")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  tasks        AgentTask[]
+  messages     AgentMessage[]
+}
+
+model AgentTask {
+  id          String   @id @default(cuid())
+  type        String
+  priority    Int      @default(0)
+  status      String   @default("pending")
+  data        String   @default("{}")
+  result      String?
+  error       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  agentId     String
+}
+
+model AgentMessage {
+  id          String   @id @default(cuid())
+  type        String
+  content     String
+  metadata    String   @default("{}")
+  createdAt   DateTime @default(now())
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  agentId     String
+  sender      String
+  recipient   String?
+  priority    Int      @default(0)
+}
+
+model SyncOperation {
+  id         String   @id @default(cuid())
+  type       String   // "create", "update", "delete"
+  model      String
+  data       String
+  timestamp  DateTime @default(now())
+  deviceId   String
+  status     String   @default("pending")
+  retryCount Int      @default(0)
+  error      String?
+}
+
+model SyncLog {
+  id         String   @id @default(cuid())
+  operation  String
+  result     String   // "success", "failure"
+  error      String?
+  timestamp  DateTime @default(now())
+} 
