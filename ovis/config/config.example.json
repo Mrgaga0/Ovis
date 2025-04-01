@@ -1,0 +1,28 @@
+{
+  "api_keys": {
+    "gemini": "YOUR_GEMINI_API_KEY",
+    "brave_search": "YOUR_BRAVE_SEARCH_API_KEY"
+  },
+  "storage": {
+    "local_path": "./data",
+    "nas": {
+      "enabled": false,
+      "host": "",
+      "user": "",
+      "password": "",
+      "share_path": ""
+    }
+  },
+  "ui": {
+    "theme": "light",
+    "language": "ko",
+    "window_size": {
+      "width": 1200,
+      "height": 800
+    }
+  },
+  "workflow": {
+    "default_workflows_path": "./config/workflows",
+    "auto_save": true
+  }
+}

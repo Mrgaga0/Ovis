@@ -1,0 +1,40 @@
+id: translation_workflow
+name: Text Translation Workflow
+description: Translate text between different languages with multi-step processing
+
+tasks:
+  - id: load_input
+    handler: load_from_file
+    parameters:
+      filename: "input.txt"
+      encoding: "utf-8"
+
+  - id: preprocess_text
+    handler: process_text
+    parameters:
+      previous_result: $load_input
+      operations:
+        - trim
+        - normalize_whitespace
+        - remove_special_chars
+
+  - id: translate_to_korean
+    handler: translate_text
+    parameters:
+      previous_result: $preprocess_text
+      source_language: "en"
+      target_language: "ko"
+
+  - id: translate_to_english
+    handler: translate_text
+    parameters:
+      previous_result: $translate_to_korean
+      source_language: "ko"
+      target_language: "en"
+
+  - id: save_result
+    handler: save_to_file
+    parameters:
+      filename: "translation_result.txt"
+      content: "Original:\n$preprocess_text\n\nKorean:\n$translate_to_korean\n\nBack to English:\n$translate_to_english"
+      format: "txt" 

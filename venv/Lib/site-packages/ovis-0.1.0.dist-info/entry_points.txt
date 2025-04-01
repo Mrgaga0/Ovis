@@ -1,0 +1,2 @@
+[console_scripts]
+ovis = ovis.main:main

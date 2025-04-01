@@ -1,0 +1,14 @@
+{
+  "api_keys": {
+    "gemini": "YOUR_GEMINI_API_KEY",
+    "brave_search": "YOUR_BRAVE_SEARCH_API_KEY"
+  },
+  "ui": {
+    "theme": "light",
+    "font_size": "medium"
+  },
+  "app": {
+    "language": "ko",
+    "startup_page": "dashboard"
+  }
+}

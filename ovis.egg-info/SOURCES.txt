@@ -1,0 +1,7 @@
+setup.py
+ovis.egg-info/PKG-INFO
+ovis.egg-info/SOURCES.txt
+ovis.egg-info/dependency_links.txt
+ovis.egg-info/entry_points.txt
+ovis.egg-info/requires.txt
+ovis.egg-info/top_level.txt

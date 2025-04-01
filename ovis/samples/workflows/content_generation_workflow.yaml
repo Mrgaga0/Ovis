@@ -1,0 +1,23 @@
+id: content_generation_workflow
+name: Content Generation and Translation
+description: Generate text content and translate it to another language
+
+tasks:
+  - id: generate_content
+    type: generate_text
+    params:
+      prompt: "Write a short article about sustainable living and eco-friendly practices"
+      length: 500
+
+  - id: translate_to_spanish
+    type: translate_text
+    params:
+      previous_result: $generate_content
+      target_language: "es"
+
+  - id: save_both_versions
+    type: save_to_file
+    params:
+      filename: "sustainable_living_bilingual.txt"
+      content: "$generate_content.text\n\n=== SPANISH TRANSLATION ===\n\n$translate_to_spanish.translated_text"
+      format: "txt" 
